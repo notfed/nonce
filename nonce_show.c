@@ -14,13 +14,15 @@ static unsigned int fmt_xlong(register char* s,register unsigned long u)
 }
 void nonce_show(const char *nonce)
 {
-	int i;
-	char buf[40];
+	unsigned int i;
+	unsigned int len;
+	unsigned char buf[40];
 	for(i=0;i<NONCE_BYTES;i++)
 	{
-	  fmt_xlong(buf,nonce[i]);
-	  buffer_puts(buffer_1,buf);
-	  buffer_puts(buffer_1,",");
+	  len = fmt_xlong(buf,(unsigned char)nonce[i]);
+	  if(len==1) buffer_put(buffer_1,"0",1);
+	  buffer_put(buffer_1,buf,len);
+	  buffer_put(buffer_1,",",1);
 	}
 	buffer_flush(buffer_1);
 }

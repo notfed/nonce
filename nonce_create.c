@@ -2,11 +2,13 @@
 #include "nonce.h"
 #include "error.h"
 #include "strerr.h"
-static const char zerononce[NONCE_BYTES] = {0};
+#include "byte.h"
 void nonce_create(const char *filepath)
 {
 	int fd;
 	int i;
+	char zerononce[NONCE_BYTES];
+	byte_zero(zerononce,NONCE_BYTES);
         while((fd=open_excl(filepath))==-1) {
           if(errno==error_intr || errno==error_again)
           { sleep(1); continue; }

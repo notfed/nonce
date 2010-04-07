@@ -10,6 +10,7 @@ void nonce_next(const char *filepath, char *nonce)
 	int i;
 	int j;
 	char tmpnonce[NONCE_BYTES];
+	byte_zero(tmpnonce,NONCE_BYTES);
 	while((fd=open_rw(filepath))==-1) {
 	  if(errno==error_intr || errno==error_again) 
 	  { sleep(1); continue; }
@@ -29,7 +30,7 @@ void nonce_next(const char *filepath, char *nonce)
 	}
 	for(j=0;j<NONCE_BYTES;j++)
 	{
-	  if(++tmpnonce[j]!=0) break;
+	  if((++tmpnonce[j])!=0) break;
 	}
 	if(seek_begin(fd)==-1) 
 	  strerr_die1sys(111,"trynonce: error rewinding nonce: ");
