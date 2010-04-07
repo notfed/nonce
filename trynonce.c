@@ -3,9 +3,8 @@
 int main(int argc, char *argv[])
 {
 	char nonce[12];
-	buffer_putsflush(buffer_1,"{");
-	nonce_next("mynonce",nonce);
+	if(!argv[1]) argv[1]="nonce";
+	nonce_next(argv[1],nonce);
 	nonce_show(nonce);
-	buffer_putsflush(buffer_1,"}\n");
 	return 0;
 }
