@@ -40,6 +40,21 @@ void nonce_next(const char *filepath, char *nonce)
 	  else 
 	  { strerr_die1sys(111,"trynonce: error writing nonce: "); }
 	} 
-	byte_copy(nonce,NONCE_BYTES,tmpnonce);
+	while((fd=open_read("/dev/urandom"))==-1) {
+	  if(errno==error_intr || errno==error_again) 
+	  { sleep(1); continue; }
+	  else 
+	  { strerr_die1sys(111,"trynonce: error opening /dev/urandom: "); }
+	}
+	while((i=read(fd,tmpnonce+(NONCE_BYTES-RAND_BYTES),RAND_BYTES))==-1) {
+	  if(errno==error_intr || errno==error_again) 
+	  { sleep(1); continue; }
+	  else 
+	  { strerr_die1sys(111,"trynonce: error reading nonce: "); }
+	} 
+	if(i!=RAND_BYTES) {
+	  strerr_die1x(111,"trynonce: error: short random");
+	}
 	close(fd);
+	byte_copy(nonce,NONCE_BYTES,tmpnonce);
 }
