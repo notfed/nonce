@@ -11,6 +11,9 @@ void nonce_next(const char *filepath, char *nonce)
 	int j;
 	char tmpnonce[NONCE_BYTES];
 	byte_zero(tmpnonce,NONCE_BYTES);
+
+	/* 12 Nonce Bytes */
+
 	while((fd=open_rw(filepath))==-1) {
 	  if(errno==error_intr || errno==error_again) 
 	  { sleep(1); continue; }
@@ -40,9 +43,15 @@ void nonce_next(const char *filepath, char *nonce)
 	  else 
 	  { strerr_die1sys(111,"trynonce: error writing nonce: "); }
 	} 
+	close(fd);
+
+        /* 4 Random Bytes */
+
 	while((fd=open_read("/dev/urandom"))==-1) {
 	  if(errno==error_intr || errno==error_again) 
 	  { sleep(1); continue; }
+	  else if(errno==error_noent)
+	  { goto nodevurandom; }
 	  else 
 	  { strerr_die1sys(111,"trynonce: error opening /dev/urandom: "); }
 	}
@@ -56,5 +65,6 @@ void nonce_next(const char *filepath, char *nonce)
 	  strerr_die1x(111,"trynonce: error: short random");
 	}
 	close(fd);
+nodevurandom:
 	byte_copy(nonce,NONCE_BYTES,tmpnonce);
 }
