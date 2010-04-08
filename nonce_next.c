@@ -4,13 +4,18 @@
 #include "strerr.h"
 #include "nonce.h"
 #include "seek.h"
+#include "tai.h"
 void nonce_next(const char *filepath, char *nonce)
 {
 	int fd;
 	int i;
 	int j;
-	char tmpnonce[NONCE_BYTES];
-	byte_zero(tmpnonce,NONCE_BYTES);
+        struct tai oldtemps;
+        struct tai nowtemps;
+        struct tai onesecond;
+        char tmpnonce[NONCE_BYTES];
+        byte_zero(tmpnonce,NONCE_BYTES);
+        onesecond.x = 1;
 
 	/* 12 Nonce Bytes */
 
@@ -31,10 +36,14 @@ void nonce_next(const char *filepath, char *nonce)
 	if(i!=NONCE_BYTES) {
 	  strerr_die1x(111,"trynonce: error: short nonce");
 	}
-	for(j=0;j<NONCE_BYTES;j++)
-	{
-	  if((++tmpnonce[j])!=0) break;
-	}
+
+        tai_now(&nowtemps);
+        tai_unpack(tmpnonce,&oldtemps);
+        if(tai_less(&nowtemps,&oldtemps))
+            nowtemps = oldtemps;
+        tai_add(&nowtemps,&nowtemps,&onesecond);
+        tai_pack(&tmpnonce,&nowtemps);
+
 	if(seek_begin(fd)==-1) 
 	  strerr_die1sys(111,"trynonce: error rewinding nonce: ");
 	while((i=write(fd,tmpnonce,NONCE_BYTES))==-1) {
@@ -44,6 +53,8 @@ void nonce_next(const char *filepath, char *nonce)
 	  { strerr_die1sys(111,"trynonce: error writing nonce: "); }
 	} 
 	close(fd);
+
+
 
         /* 4 Random Bytes */
 
