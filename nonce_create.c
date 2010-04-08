@@ -12,6 +12,8 @@ void nonce_create(const char *filepath)
         while((fd=open_excl(filepath))==-1) {
           if(errno==error_intr || errno==error_again)
           { sleep(1); continue; }
+          else if(errno==error_exist)
+	  { return; }
           else
           { strerr_die1sys(111,"trynonce: error creating nonce: "); }
 	}
