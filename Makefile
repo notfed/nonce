@@ -1,5 +1,5 @@
-trynonce : trynonce.o nonce_next.o nonce_show.o nonce_create.o seek.a strerr.a buffer.a str.a byte.a error.a open.a fmt.a
-	cc -o trynonce trynonce.o nonce_next.o nonce_show.o nonce_create.o seek.a strerr.a buffer.a str.a byte.a error.a open.a fmt.a
+trynonce : trynonce.o nonce_next.o nonce_show.o nonce_separate.o nonce_create.o seek.a strerr.a buffer.a str.a byte.a error.a open.a fmt.a
+	cc -o trynonce trynonce.o nonce_next.o nonce_show.o nonce_separate.o nonce_create.o seek.a strerr.a buffer.a str.a byte.a error.a open.a fmt.a
 trynonce.o : trynonce.c 
 	cc -c trynonce.c
 nonce_next.o : nonce_next.c
