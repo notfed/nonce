@@ -6,5 +6,7 @@ nonce_next.o : nonce_next.c
 	cc -c nonce_next.c
 nonce_show.o : nonce_show.c
 	cc -c nonce_show.c
+nonce_separate.o : nonce_separate.c
+	cc -c nonce_separate.c
 nonce_create.o : nonce_create.c
 	cc -c nonce_create.c
