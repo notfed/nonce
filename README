@@ -1,0 +1,31 @@
+This project produces nonce.a, a simple nonce management library that implements the concept of nonces as defined by DNSCurve (see http://dnscurve.org/).  All nonces are exactly 12-bytes.
+
+There are four branches, all with the same interface but defining nonces in slightly different ways: 
+	nonce12 - Uses a 12-byte counter starting from 0. Each time next_nonce is called, the nonce is incremented by one.
+	nonce8rand4 - Uses an 8-byte counter starting from 0, plus a 4-byte random number. Each time next_nonce is called, the 8-byte counter is incremented by one, and the 4-byte random number is recalculated.
+	tai12 - Uses a 12-byte TAI64N label (see http://cr.yp.to/proto/tai64.txt) re-calculated each time nonce_next is called.  If the time has not changed (in the unlikely case where nonce_next is called twice quickly in succession), the number is incremented to ensure a unique nonce.
+	tai8rand4 - Uses an 8-byte TAI64 label (see http://cr.yp.to/proto/tai64.txt) plus a 4-byte random number. 
+
+The header nonce.h has the following operations:
+
+  void nonce_create(const char *filepath);
+  void nonce_next(const char *filepath, char *nonce);
+  void nonce_separate(char *nonce, int nserv,int serv);
+  void nonce_show(const char *nonce);
+
+A nonce is stored in a file, and the file must be accessed and updated each time a nonce is used, to prevent the same nonce number from being used twice.  
+
+When a new nonce is needed, create a buffer of size NONCE_BYTES (defined in nonce.h), choose a filename, and call nonce_next. If the file does not yet exist, nonce_create will be called to create one for you. 
+
+e.g.:
+
+	char buf[NONCE_BYTES];
+	nonce_next("mynonce",buf);
+
+	/* buf now contains a unique nonce */
+
+If you want to support nonce separation (see http://dnscurve.org/out-implement.html) use nonce_separate after each nonce_next.  The function nonce_separate takes two arguments: the total number of servers, and a zero-indexed number representing the current server:
+
+	char buf[NONCE_BYTES];
+	nonce_next("mynonce",buf);
+	nonce_separate(50,4); /* we are server number 5 of 50 */
