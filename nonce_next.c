@@ -4,6 +4,7 @@
 #include "strerr.h"
 #include "nonce.h"
 #include "seek.h"
+/* nonce12 version (12-byte counter) */
 void nonce_next(const char *filepath, char *nonce)
 {
 	int fd;
