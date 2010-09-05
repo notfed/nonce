@@ -1,8 +1,7 @@
 #ifndef TAI_H
 #define TAI_H
 
-#include <stdint.h>
-#define uint64 uint64_t
+#include "uint64.h"
 
 struct tai {
   uint64 x;
