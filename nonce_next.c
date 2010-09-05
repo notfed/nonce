@@ -4,6 +4,7 @@
 #include "strerr.h"
 #include "nonce.h"
 #include "seek.h"
+/* nonce8rand4 version (8-byte counter + 4-byte random) */
 void nonce_next(const char *filepath, char *nonce)
 {
 	int fd;
