@@ -5,6 +5,7 @@
 #include "nonce.h"
 #include "seek.h"
 #include "tai.h"
+/* tai8rand4 version (8-byte unique TAI64 counter + 4-byte random) */
 void nonce_next(const char *filepath, char *nonce)
 {
 	int fd;
